@@ -3,6 +3,7 @@ from tkinter import messagebox, LabelFrame
 import pafy
 import vlc
 from pydub import AudioSegment
+import os
 
 
 root = Tk()
@@ -11,7 +12,23 @@ root.title("Youtube downloader 3")
 root.iconbitmap("Youtube.ico")
 
 
-# bitrate conversion of the dowwnloaded file
+def refresh(link_entry, frame6, frame5, clpbrd):
+    root.clipboard_clear()
+    media_delete()
+    empty_clipboard(link_entry)
+    frame6.destroy()
+    frame6 = LabelFrame(width=450, height=93, master=frame, text="Státusz", relief=RAISED, bg="dimgray", borderwidth=1)
+    frame6.place(x=296, y=283)
+
+
+def file_delete(conv_file):
+    os.remove(conv_file)
+    label = Label(master=frame6, text="AZ erdeti vidó törlésre került-", bg="dimgray", fg="white",
+                  font=("Arial", 10, 'bold'))
+    label.place(x=2, y=38)
+
+
+    # bitrate conversion of the dowwnloaded file
 def convert_file(clpbrd):
     url = clpbrd()
     video = pafy.new(url)
@@ -20,40 +37,47 @@ def convert_file(clpbrd):
     new_title = bestaudio.title+".mp3"
     sound = AudioSegment.from_file(conv_file)
     sound.export(new_title, format="mp3", bitrate="320k")
-    label = Label(master=frame6, text="Az audió konvertálása befejeződött...", fg="blue", font=("Arial", 10, 'bold'))
+    label = Label(master=frame6, text="Az audió konvertálása befejeződött...", bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
     label.place(x=2, y=20)
+    label = Label(master=frame5, text="Szeretnéd törölni az eredeti file-t?", bg="dimgray", fg="white",
+                  font=("Arial", 10, 'bold'))
+    label.place(x=2, y=220)
+    button5 = Button(master=frame5, text="Eredeti file törlése", bg="silver", command=lambda: file_delete(conv_file))
+    button5.place(x=180, y=247)
 
 
 # creation of the gui part1
 def gui1(frame2, frame3, frame4, clpbrd, frame7):
-    label_link = Label(master=frame2, text="A youtube média linkje: ", font=("Arial", 10, 'bold'))
+    label_link = Label(master=frame2, text="A youtube média linkje: ", bg="dimgray", font=("Arial", 10, 'bold'))
     label_link.place(x=2, y=2)
-    label1 = Label(master=frame3, text="A youtube média címe: ", font=("Arial", 10, 'bold'))
+    label1 = Label(master=frame3, text="A youtube média címe: ", bg="dimgray", font=("Arial", 10, 'bold'))
     label1.place(x=2, y=2)
-    label2 = Label(master=frame3, text="A média hossza:", font=("Arial", 10, 'bold'))
+    label2 = Label(master=frame3, text="A média hossza:", bg="dimgray", font=("Arial", 10, 'bold'))
     label2.place(x=2, y=48)
-    label3 = Label(master=frame3, text="Videó Stream:", font=("Arial", 10, 'bold'))
+    label3 = Label(master=frame3, text="Videó Stream:", bg="dimgray", font=("Arial", 10, 'bold'))
     label3.place(x=2, y=80)
-    label4 = Label(master=frame3, text="Audió Stream:", font=("Arial", 10, 'bold'))
+    label4 = Label(master=frame3, text="Audió Stream:", bg="dimgray", font=("Arial", 10, 'bold'))
     label4.place(x=145, y=80)
     link_entry = Entry(master=frame2)
     link_entry.place(x=2, y=40, width=275)
-    button1 = Button(master=frame2, text="Link másolása vágólapról", command=lambda: vagolap(link_entry, clpbrd))
+    button1 = Button(master=frame2, text="Link másolása vágólapról", bg="silver", command=lambda: vagolap(link_entry, clpbrd))
     button1.place(x=2, y=70)
-    button2 = Button(master=frame2, text="Vágólap törlése", command=lambda: empty_clipboard(link_entry))
+    button2 = Button(master=frame2, text="Vágólap törlése", bg="silver", command=lambda: empty_clipboard(link_entry))
     button2.place(x=2, y=100)
-    button3 = Button(master=frame3, text="Média adatok\n betöltése", command=lambda: media_data(clpbrd, link_entry))
+    button3 = Button(master=frame3, text="Média adatok\n betöltése", bg="silver", command=lambda: media_data(clpbrd, link_entry))
     button3.place(x=275, y=80)
-    button4 = Button(master=frame3, text="Média adatok\n törlése", command=media_delete)
+    button4 = Button(master=frame3, text="Média adatok\n törlése", bg="silver", command=media_delete)
     button4.place(x=360, y=80)
-    label_link = Label(master=frame4, text="A lejátszó működtetéséhez telepített VLC alkalmazás szükséges.", font=("Arial", 10, 'bold'))
+    label_link = Label(master=frame4, text="A lejátszó működtetéséhez telepített VLC alkalmazás szükséges.", bg="dimgray", font=("Arial", 10, 'bold'))
     label_link.place(x=2, y=2)
-    label_link = Label(master=frame4, text="A youtube videó egy külső ablakban nyílik meg.", font=("Arial", 10, 'normal'))
+    label_link = Label(master=frame4, text="A youtube videó egy külső ablakban nyílik meg.", bg="dimgray", font=("Arial", 10, 'normal'))
     label_link.place(x=2, y=20)
-    label_link = Label(master=frame4, text="A videó az alábbi gombokkal vezérelhető",font=("Arial", 10, 'normal'))
+    label_link = Label(master=frame4, text="A videó az alábbi gombokkal vezérelhető", bg="dimgray", font=("Arial", 10, 'normal'))
     label_link.place(x=2, y=38)
-    button10 = Button(master=frame7, text="Help", command=lambda: helptext())
-    button10.place(x=2, y=10)
+    button10 = Button(master=frame7, text="Help", bg="silver", command=lambda: helptext())
+    button10.place(x=10, y=10)
+    button11 = Button(master=frame7, text="Új letöltés", bg="silver", command=lambda: refresh(link_entry, frame6, frame5, clpbrd))
+    button11.place(x=50, y=10)
     media_player(frame4,clpbrd)
     streams(frame5,clpbrd)
 
@@ -73,7 +97,7 @@ def helptext():
 def download_video(best):
     try:
         best.download(quiet=False)
-        label = Label(master=frame6, text="A videó letöltése befejeződött..", fg="blue", font=("Arial", 10, 'bold'))
+        label = Label(master=frame6, text="A videó letöltése befejeződött..", bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
         label.place(x=2, y=2)
     except FileExistsError:
         messagebox.showinfo("Hiba!", "Ilyen címen már van videó letöltve.")
@@ -82,17 +106,18 @@ def download_video(best):
 # download audio
 def download_audio(bestaudio, frame6):
     try:
-        label = Label(master=frame6, text="Az audió letöltése befejeződött..", fg="blue", font=("Arial", 10, 'bold'))
+        label = Label(master=frame6, text="Az audió letöltése befejeződött..", bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
         label.place(x=2, y=2)
         bestaudio.download(quiet=False)
     except FileExistsError:
         messagebox.showinfo("Hiba!", "Ilyen címen már van videó letöltve.")
-    label = Label(master=frame5, text="Ennél a minőségnél jobb is elérhető.", fg="blue", font=("Arial", 10, 'bold'))
-    label.place(x=2, y=172)
-    label2 = Label(master=frame5, text="Szeretnéd konvertálni?", fg="blue", font=("Arial", 10, 'bold'))
-    label2.place(x=2, y=192)
-    button5 = Button(master=frame5, text="Konvertálás\n indítása", command=lambda: convert_file(clpbrd))
-    button5.place(x=180, y=200)
+
+    label = Label(master=frame5, text="Ennél a minőségnél jobb is elérhető.", bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
+    label.place(x=2, y=147)
+    label2 = Label(master=frame5, text="Szeretnéd konvertálni?", bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
+    label2.place(x=2, y=167)
+    button5 = Button(master=frame5, text="Konvertálás\n indítása", bg="silver", command=lambda: convert_file(clpbrd))
+    button5.place(x=180, y=170)
 
 
 # load the data of the best audio and video streams
@@ -103,26 +128,26 @@ def stream_load(clpbrd):
     bestaudio = video.getbestaudio()
     best_audio= bestaudio.bitrate, bestaudio.extension
     best_data= best.resolution, best.extension
-    label_link = Label(master=frame5, text= best_data, fg="blue", font=("Arial", 10, 'bold'))
+    label_link = Label(master=frame5, text= best_data, bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
     label_link.place(x=110, y=25)
-    label_link = Label(master=frame5, text=best_audio, fg="blue", font=("Arial", 10, 'bold'))
+    label_link = Label(master=frame5, text=best_audio, bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
     label_link.place(x=110, y=45)
-    button5 = Button(master=frame5, text="Videó letöltése", command=lambda: download_video(best))
-    button5.place(x=2, y=115)
-    button6 = Button(master=frame5, text="Audió letöltése", command=lambda: download_audio(bestaudio,frame6))
-    button6.place(x=100, y=115)
+    button5 = Button(master=frame5, text="Videó letöltése", bg="silver", command=lambda: download_video(best))
+    button5.place(x=2, y=105)
+    button6 = Button(master=frame5, text="Audió letöltése", bg="silver", command=lambda: download_audio(bestaudio,frame6))
+    button6.place(x=100, y=105)
 
 
 # frame 5 gui
 def streams(frame5,clpbrd):
-    label_link = Label(master=frame5, text="A legjobb elérhető videó és audio streamek", font=("Arial", 10, 'bold'))
+    label_link = Label(master=frame5, text="A legjobb elérhető videó és audio streamek", bg="dimgray", font=("Arial", 10, 'bold'))
     label_link.place(x=2, y=2)
-    label_link = Label(master=frame5, text="Videó stream:", font=("Arial", 10, 'bold'))
+    label_link = Label(master=frame5, text="Videó stream:", bg="dimgray", font=("Arial", 10, 'bold'))
     label_link.place(x=2, y=25)
-    label_link = Label(master=frame5, text="Audió stream:", font=("Arial", 10, 'bold'))
+    label_link = Label(master=frame5, text="Audió stream:", bg="dimgray", font=("Arial", 10, 'bold'))
     label_link.place(x=2, y=45)
-    button4 = Button(master=frame5, text="Streamek betöltése", command=lambda: stream_load(clpbrd))
-    button4.place(x=2, y=85)
+    button4 = Button(master=frame5, text="Streamek betöltése", bg="silver", command=lambda: stream_load(clpbrd))
+    button4.place(x=2, y=75)
 
 
 # video playback
@@ -134,22 +159,22 @@ def lej(clpbrd, button5, button6, button4):
     button5.destroy()
     button6.destroy()
     button4.destroy()
-    button5 = Button(master=frame4, text="Pause", command=lambda: player.pause())
+    button5 = Button(master=frame4, text="Pause", bg="silver", command=lambda: player.pause())
     button5.place(x=50, y=65)
-    button6 = Button(master=frame4, text="Stop", command=lambda: player.stop())
+    button6 = Button(master=frame4, text="Stop", bg="silver", command=lambda: player.stop())
     button6.place(x=100, y=65)
-    button4 = Button(master=frame4, text="Play", command=lambda: player.play())
+    button4 = Button(master=frame4, text="Play", bg="silver", command=lambda: player.play())
     button4.place(x=10, y=65)
     player.play()
 
 
 # media player gui
 def media_player(frame4, clpbrd):
-    button4 = Button(master=frame4, text="Play", command=lambda : lej(clpbrd, button5, button6, button4))
+    button4 = Button(master=frame4, text="Play", bg="silver", command=lambda : lej(clpbrd, button5, button6, button4))
     button4.place(x=10, y=65)
-    button5 = Button(master=frame4, text="Pause")
+    button5 = Button(master=frame4, text="Pause", bg="silver",)
     button5.place(x=50, y=65)
-    button6 = Button(master=frame4, text="Stop")
+    button6 = Button(master=frame4, text="Stop", bg="silver",)
     button6.place(x=100, y=65)
 
 
@@ -165,14 +190,14 @@ def media_delete():
 # media data update
 def ytb_label_update(tit, dur, isstream ,audstream):
     v = StringVar()
-    label_ytbtitle = Label(master=frame3, textvariable=v, fg="blue", font=("Arial", 10, 'bold'))
+    label_ytbtitle = Label(master=frame3, textvariable=v, bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
     label_ytbtitle.place(x=2, y=25)
     v.set(tit)
-    label_ytbduration = Label(master=frame3, text=dur, fg="blue", font=("Arial", 10, 'bold'))
+    label_ytbduration = Label(master=frame3, text=dur, bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
     label_ytbduration.place(x=115, y=48)
-    label_ytbisstream = Label(master=frame3, text=isstream, fg="blue", font=("Arial", 10, 'bold'))
+    label_ytbisstream = Label(master=frame3, text=isstream, bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
     label_ytbisstream.place(x=97, y=80)
-    label_ytbaudiostream = Label(master=frame3, text=audstream, fg="blue", font=("Arial", 10, 'bold'))
+    label_ytbaudiostream = Label(master=frame3, text=audstream, bg="dimgray", fg="white", font=("Arial", 10, 'bold'))
     label_ytbaudiostream.place(x=240, y=80)
     return v
 
@@ -211,7 +236,7 @@ def clpbrd():
     except TclError:
         messagebox.showinfo("Hiba!", "A vágólap üres.")
         root.clipboard_clear()
-        gui1(frame2, frame3,frame4,clpbrd)
+        gui1(frame2, frame3, frame4, clpbrd, frame7)
 
 
 # clipboard clear
@@ -220,27 +245,28 @@ def empty_clipboard(link_entry):
     link_entry.delete(0, END)
 
 
-# clipboard data load
+# clipboard clean
 def vagolap(link_entry, clpbrd):
     vglap_data = clpbrd()
     link_entry.insert(0,vglap_data)
 
 
 # create mainframe&frames
-frame = Frame(master=root, relief=RAISED, borderwidth=1)
+frame = Frame(master=root, relief=RAISED, bg="darkgrey", borderwidth=1)
 frame.pack(fill=BOTH, expand=True)
-frame2 = LabelFrame(width=290, height=150, master=frame, text="Youtube link betöltése", relief=RAISED, borderwidth=1)
+frame2 = LabelFrame(width=290, height=150, master=frame, text="Youtube link betöltése", relief=RAISED, bg="dimgray", borderwidth=1)
 frame2.place(x=3, y=3)
-frame3: LabelFrame = LabelFrame(width=450, height=150, master=frame, text="Youtube média adatok", relief=RAISED, borderwidth=1)
+frame3: LabelFrame = LabelFrame(width=450, height=150, master=frame, text="Youtube média adatok", relief=RAISED, bg="dimgray", borderwidth=1)
 frame3.place(x=296, y=3)
-frame4 = LabelFrame(width=450, height=125, master=frame, text="Videó lejátszás", relief=RAISED, borderwidth=1)
+frame4 = LabelFrame(width=450, height=125, master=frame, text="Videó lejátszás", relief=RAISED,bg="dimgray", borderwidth=1)
 frame4.place(x=296, y=156)
-frame5 = LabelFrame(width=290, height=300, master=frame, text="Letöltés", relief=RAISED, borderwidth=1)
+frame5 = LabelFrame(width=290, height=300, master=frame, text="Letöltés", relief=RAISED, bg="dimgray", borderwidth=1)
 frame5.place(x=3, y=156)
-frame6 = LabelFrame(width=450, height=73, master=frame, text="Státusz", relief=RAISED, borderwidth=1)
+frame6 = LabelFrame(width=450, height=93, master=frame, text="Státusz", relief=RAISED, bg="dimgray", borderwidth=1)
 frame6.place(x=296, y=283)
-frame7 = LabelFrame(width=450, height=96, master=frame, text="Információk", relief=RAISED, borderwidth=1)
-frame7.place(x=296, y=360)
+frame7 = LabelFrame(width=450, height=76, master=frame, text="Információk", relief=RAISED, bg="dimgray", borderwidth=1)
+frame7.place(x=296, y=380)
 gui1(frame2, frame3, frame4, clpbrd, frame7)
 
 root.mainloop()
+
