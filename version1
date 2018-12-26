@@ -220,7 +220,7 @@ def empty_clipboard(link_entry):
     link_entry.delete(0, END)
 
 
-# clipboard clean
+# clipboard data load
 def vagolap(link_entry, clpbrd):
     vglap_data = clpbrd()
     link_entry.insert(0,vglap_data)
